@@ -28,7 +28,7 @@
 			Dim combination(pokename_list.Count - 1) As Boolean
 			Dim combination_list As New List(Of Integer)
 			search(i, 0, combination, combination_list)
-			Console.WriteLine(i & "/" & pokename_list.Count - 1 & " " & i / pokename_list.Count & "%searched")
+			Console.WriteLine(i & "/" & pokename_list.Count - 1 & " " & i / pokename_list.Count * 100 & "%searched")
 		Next
 	End Sub
 
@@ -52,7 +52,7 @@
 		Next
 
 		If notfound Then
-			If depth > max_depth Then
+			If depth >= max_depth Then
 				max_depth = depth
 				For Each i In combination_list
 					Console.Write(pokename_list(i) & "→")
