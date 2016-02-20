@@ -4,12 +4,16 @@
 	Dim tail_cache() As String
 	Dim head_cache() As String
 
+	Dim combination_array() As Integer
+
 	Sub Main()
 		Using sr As New IO.StreamReader("data.txt", System.Text.Encoding.UTF8)
 			While Not sr.EndOfStream
 				pokename_list.Add(sr.ReadLine())
 			End While
 		End Using
+
+		ReDim combination_array(pokename_list.Count - 1)
 
 		ReDim tail_cache(pokename_list.Count - 1)
 		ReDim head_cache(pokename_list.Count - 1)
@@ -27,16 +31,16 @@
 		For i = 0 To pokename_list.Count - 1
 			Dim combination(pokename_list.Count - 1) As Boolean
 			Dim combination_list As New List(Of Integer)
-			search(i, 0, combination, combination_list)
+			search(i, 0, combination)
 			Console.WriteLine(i & "/" & pokename_list.Count - 1 & " " & i / pokename_list.Count * 100 & "%searched")
 		Next
 	End Sub
 
 	Dim max_depth As Integer
 
-	Sub search(pos As Integer, depth As Integer, combination() As Boolean, combination_list As List(Of Integer))
+	Sub search(pos As Integer, depth As Integer, combination() As Boolean)
 		combination(pos) = True
-		combination_list.Add(pos)
+		combination_array(depth) = pos
 
 		Dim notfound As Boolean = True
 
@@ -45,8 +49,7 @@
 				If tail_cache(pos) = head_cache(i) Then
 					notfound = False
 					Dim newcombination() As Boolean = DirectCast(combination.Clone(), Boolean())
-					Dim newcombination_list As New List(Of Integer)(combination_list)
-					search(i, depth + 1, newcombination, newcombination_list)
+					search(i, depth + 1, newcombination)
 				End If
 			End If
 		Next
@@ -54,8 +57,8 @@
 		If notfound Then
 			If depth >= max_depth Then
 				max_depth = depth
-				For Each i In combination_list
-					Console.Write(pokename_list(i) & "→")
+				For i = 0 To depth
+					Console.Write(pokename_list(combination_array(i)) & "→")
 				Next
 				Console.WriteLine("")
 			End If
